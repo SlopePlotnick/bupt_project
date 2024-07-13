@@ -7,6 +7,9 @@ from sklearn import preprocessing
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import GaussianNB
 
 mult = 5
 
@@ -286,6 +289,15 @@ def LR():
 def kNN():
     return KNeighborsClassifier(n_neighbors=3, n_jobs=-1)
 
+def RF():
+    return RandomForestClassifier()
+
+def DT():
+    return DecisionTreeClassifier()
+
+def NB():
+    return GaussianNB()
+
 
 def train_test(samples):
     # Import `train_test_split` from `sklearn.model_selection`
@@ -558,12 +570,18 @@ X_train, X_test = normalize_data(X_train,X_test)
 model_svm = SVM()
 model_lr = LR()
 model_knn = kNN()
+model_rf = RF()
+model_dt = DT()
+model_nb = NB()
 
 X_train = np.nan_to_num(X_train)
 y_train = y_train.fillna(0)
 model_svm = compile_train(model_svm,X_train,y_train,False)
 model_lr = compile_train(model_lr,X_train,y_train,False)
 model_knn = compile_train(model_knn,X_train,y_train,False)
+model_rf = compile_train(model_rf,X_train,y_train,False)
+model_dt = compile_train(model_dt,X_train,y_train,False)
+model_nb = compile_train(model_nb,X_train,y_train,False)
 
 ## Comment next 2 blocks if training new models
 ## Execute them if loading pre-trained models
@@ -572,7 +590,7 @@ model_knn = compile_train(model_knn,X_train,y_train,False)
 # model_lr = load_Sklearn('LR')
 # model_knn = load_Sklearn('kNN-1viz')
 
-results = pd.DataFrame(columns=['Method','Accuracy','Precision','Recall', 'F1_Score', 'Average','Normal_Detect_Rate','Atk_Detect_Rate'])
+results = pd.DataFrame(columns=['Method','Accuracy','Precision','Recall', 'F1_Score', 'Average'])
 
 y_pred = model_svm.predict(X_test)
 
@@ -580,10 +598,8 @@ y_pred = y_pred.round()
 
 acc, prec, rec, f1, avrg = testes(model_svm, X_test, y_test, y_pred, False)
 
-norm, atk = test_normal_atk(y_test, y_pred)
-
 results = results.append({'Method': 'SVM', 'Accuracy': acc, 'Precision': prec, 'F1_Score': f1,
-                          'Recall': rec, 'Average': avrg, 'Normal_Detect_Rate': norm, 'Atk_Detect_Rate': atk},
+                          'Recall': rec, 'Average': avrg},
                          ignore_index=True)
 
 y_pred = model_lr.predict(X_test)
@@ -592,10 +608,8 @@ y_pred = y_pred.round()
 
 acc, prec, rec, f1, avrg = testes(model_lr, X_test, y_test, y_pred, False)
 
-norm, atk = test_normal_atk(y_test, y_pred)
-
 results = results.append({'Method': 'LR', 'Accuracy': acc, 'Precision': prec, 'F1_Score': f1,
-                          'Recall': rec, 'Average': avrg, 'Normal_Detect_Rate': norm, 'Atk_Detect_Rate': atk},
+                          'Recall': rec, 'Average': avrg},
                          ignore_index=True)
 
 y_pred = model_knn.predict(X_test)
@@ -604,10 +618,38 @@ y_pred = y_pred.round()
 
 acc, prec, rec, f1, avrg = testes(model_knn, X_test, y_test, y_pred, False)
 
-norm, atk = test_normal_atk(y_test, y_pred)
-
 results = results.append({'Method': 'kNN', 'Accuracy': acc, 'Precision': prec, 'F1_Score': f1,
-                          'Recall': rec, 'Average': avrg, 'Normal_Detect_Rate': norm, 'Atk_Detect_Rate': atk},
+                          'Recall': rec, 'Average': avrg},
+                         ignore_index=True)
+
+y_pred = model_rf.predict(X_test)
+
+y_pred = y_pred.round()
+
+acc, prec, rec, f1, avrg = testes(model_rf, X_test, y_test, y_pred, False)
+
+results = results.append({'Method': 'RF', 'Accuracy': acc, 'Precision': prec, 'F1_Score': f1,
+                          'Recall': rec, 'Average': avrg},
+                         ignore_index=True)
+
+y_pred = model_dt.predict(X_test)
+
+y_pred = y_pred.round()
+
+acc, prec, rec, f1, avrg = testes(model_dt, X_test, y_test, y_pred, False)
+
+results = results.append({'Method': 'DT', 'Accuracy': acc, 'Precision': prec, 'F1_Score': f1,
+                          'Recall': rec, 'Average': avrg},
+                         ignore_index=True)
+
+y_pred = model_nb.predict(X_test)
+
+y_pred = y_pred.round()
+
+acc, prec, rec, f1, avrg = testes(model_nb, X_test, y_test, y_pred, False)
+
+results = results.append({'Method': 'NB', 'Accuracy': acc, 'Precision': prec, 'F1_Score': f1,
+                          'Recall': rec, 'Average': avrg},
                          ignore_index=True)
 
 results.to_csv('results.csv', index=False)
