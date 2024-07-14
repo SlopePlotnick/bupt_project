@@ -1,46 +1,36 @@
-# Machine and Deep Learning for DDoS Detection
-### Marcos V. O. Assis (mvoassis@gmail.com)
-***
+# Evaluation of Classification algorithms for Distributed Denial of Service Attack Detection
 
-> ## Published Results:
+本代码是对论文**Evaluation of Classification algorithms for Distributed Denial of Service Attack Detection**中平衡数据集算法评估部分的复现与改进。对比评估了多个算法针对分布式拒绝服务攻击检测的分类性能。
 
-* *A GRU deep learning system against attacks in software defined networks*
+## Folders
 
-* https://doi.org/10.1016/j.jnca.2020.102942
+```
+.
+├── README.md
+├── feature_selected.csv 选取的用于训练的25个最重要的特征
+├── main.py 运行脚本
+└── results.csv 模型评估结果
+```
 
+## Data
 
++ 使用CICDDoS2019数据集，获取地址：https://www.unb.ca/cic/datasets/ddos-2019.html
 
-* \***Update - 06/2022** - improved detection results through better data cleaning process. Updated results on Git. 
++ 预处理后会生成如下文件：
+  + `export_dataframe_proc.csv`存放用于训练的预处理数据
+  + `export_tests_proc.csv`存放用于测试的预处理数据
 
-> ## Objectives
+## Models
 
-1. Evaluate different Machine and Deep Learning methods for anomaly detection.
-2. Detection of Distributed Denial of Service Attacks
++ Support Vector Machine
++ Logistic Regression
++ K Nearest Neighbor(k == 3)
++ Random Forest
++ Decision Tree
++ Naive Bayes
 
-> ## Dataset
+## Run
 
-* CIC-DDoS2019 - https://www.unb.ca/cic/datasets/ddos-2019.html
-
-> ## Evaluated Methods
-
-* Gated Recurrent Units (GRU)
-* Long-Short Term Memory (LSTM)
-* Convolutional Neural Network (CNN)
-* Deep Neural Network (DNN)
-* Support Vector Machine (SVM)
-* Logistic Regression (LR)
-* Gradient Descent (GD)
-* k Nearest Neighbors (kNN)
-
-> ## Environment Config.
-
-* Python 3.7.13
-* Numpy 1.16.4
-* Scikit-learn 0.21.2
-* Pandas 0.24.2
-* Tensorflow 1.14.0
-* Keras 2.2.4
-* Matplotlib 3.1.0
-* Seaborn 0.11.2
-
-***
+```shell
+python3 main.py
+```
