@@ -61,3 +61,57 @@ DDoS 攻击通常通过一个 botnet 或多个 bot 进行。因此，当目标�
 ### 6. 结论
 
 在这篇论文中，我们使用的是CICDDoS2019数据集，这是一个相对较新的数据集，包含了DDoS最新的攻击签名。我们使用主要的监督分类算法进行了实验，以从合法流量中准确地分类出攻击。当将结果与所有分类器中的其他算法比较时，决策树、随机森林和K-NN的表现最好。尽管初步结果令人鼓舞，但我们计划将工作扩展到更大的数据集，并针对不同类型的DDoS攻击。我们将把未来的工作重点放在这些方向上。
+
+## 2. 特征字段选用
+
+利用`scikit-learn`库中的`SelectKBest`类，从原数据集的所有特征字段中选取了25个得分最高的特征字段用于训练。下对这25个字段进行解释说明。
+
+| Index | Feature_Name           | Explanation                                                  |
+| ----- | ---------------------- | ------------------------------------------------------------ |
+| 81    | Inbound                | 表示流量的方向，是否进入系统（例如，在入侵检测系统中，进入系统的流量可能更有可能是恶意的） |
+| 11    | Fwd Packet Length Mean | 正向数据包长度的平均值                                       |
+| 56    | Avg Fwd Segment Size   | 前向段的平均大小                                             |
+| 41    | Min Packet Length      | 数据包的最小长度                                             |
+| 10    | Fwd Packet Length Min  | 向前数据包的最小长度                                         |
+| 43    | Packet Length Mean     | 数据包长度的平均值                                           |
+| 0     | Source Port            | 源端口号                                                     |
+| 54    | Down/Up Ratio          | 下行/上行比例                                                |
+| 55    | Average Packet Size    | 平均数据包大小                                               |
+| 2     | Protocol               | 网络协议类型                                                 |
+| 51    | URG Flag Count         | 紧急标记（URG）的数量，它是TCP标头中的一个字段               |
+| 1     | Destination Port       | 目的端口号                                                   |
+| 9     | Fwd Packet Length Max  | 向前数据包的最大长度                                         |
+| 17    | Flow Bytes/s           | 每秒流量字节数                                               |
+| 14    | Bwd Packet Length Min  | 回向数据包的最小长度                                         |
+| 39    | Fwd Packets/s          | 每秒正向数据包数                                             |
+| 18    | Flow Packets/s         | 每秒流量数据包数                                             |
+| 52    | CWE Flag Count         | CWE标志计数，CWE是TCP头部的一个字段                          |
+| 69    | Init_Win_bytes_forward | 前向初始窗口字节数                                           |
+| 15    | Bwd Packet Length Mean | 后向数据包长度的平均值                                       |
+| 57    | Avg Bwd Segment Size   | 后向段的平均大小                                             |
+| 71    | act_data_pkt_fwd       | 实际数据包转发                                               |
+| 33    | Fwd PSH Flags          | 前向数据包PSH标志计数，PSH是TCP头部的一个字段，当设置了PSH标志时，表示应立即将这个包发送到上层 |
+| 48    | RST Flag Count         | RST标志计数，RST是TCP头部的一个字段，用于复位连接            |
+| 5     | Total Fwd Packets      | 总共的前向数据包数量                                         |
+
+## 3. 算法评估结果
+
+根据要求，评估了如下模型在数据集上的分类性能：
+
++ Support Vector Machine(SVM)
++ Logistic Regression(LR)
++ K Nearest Neighbor(k == 3)(kNN)
++ Random Forest(RF)
++ Decision Tree(DT)
++ Naive Bayes(NB)
+
+评估结果及性能指标如下：
+
+| Method | Accuracy   | Precision  | Recall     | F1_Score   | Average    |
+| ------ | ---------- | ---------- | ---------- | ---------- | ---------- |
+| SVM    | 0.99479533 | 0.99088897 | 0.99877419 | 0.99481596 | 0.99481861 |
+| LR     | 0.99485562 | 0.99038174 | 0.99941724 | 0.99487898 | 0.99488339 |
+| kNN    | 0.99816128 | 0.99789114 | 0.99843257 | 0.99816178 | 0.9981617  |
+| RF     | 0.99991962 | 0.99993971 | 0.99989952 | 0.99991962 | 0.99991962 |
+| DT     | 0.9680385  | 0.99850178 | 0.93748367 | 0.96703114 | 0.96776377 |
+| NB     | 0.83910737 | 0.99483901 | 0.6817515  | 0.80906218 | 0.83119002 |
