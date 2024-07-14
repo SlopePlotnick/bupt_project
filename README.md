@@ -6,8 +6,9 @@
 
 ```
 .
+├── Answer.md 论文翻译、模型评估结果与特征选取说明
 ├── README.md
-├── feature_selected.csv 选取的用于训练的25个最重要的特征
+├── feature_selected.csv 选取的用来训练的25个特征
 ├── main.py 运行脚本
 └── results.csv 模型评估结果
 ```
